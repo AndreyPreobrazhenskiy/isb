@@ -51,3 +51,32 @@ def create_mapping(cipher_freq: Dict[str, float], reference_freq: Dict[str, floa
     sorted_reference_freq = sorted(reference_freq.items(), key=lambda item: item[1], reverse=True)
 
     return {cipher_char: ref_char for (cipher_char, _), (ref_char, _) in zip(sorted_cipher_freq, sorted_reference_freq)}
+
+
+def decode_text(text: str, mapping: Dict[str, str]) -> str:
+    """
+    Deciphers the text using the provided character mapping.
+
+    :param text: The encrypted text.
+    :param mapping: The character mapping dictionary.
+    :return: The decrypted text.
+    """
+    return ''.join(mapping.get(char, char) for char in text)
+
+
+def frequency_decrypt(cipher_text: str, freq_file: str, reference_freq: Dict[str, float]) -> Tuple[str, Dict[str, str]]:
+    """
+    Decrypts text using frequency analysis and creates a mapping.
+
+    :param cipher_text: The encrypted text.
+    :param freq_file: Path to save the calculated character frequencies.
+    :param reference_freq: The reference character frequency dictionary.
+    :return: A tuple (decrypted text, character mapping dictionary).
+    """
+    cipher_freq = calculate_frequencies(cipher_text)
+    save_frequencies(cipher_freq, freq_file)
+
+    mapping = create_mapping(cipher_freq, reference_freq)
+    decrypted_text = decode_text(cipher_text, mapping)
+
+    return decrypted_text, mapping
