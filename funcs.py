@@ -1,6 +1,6 @@
+from alphabet import ALPHABET
 from pathlib import Path
 
-from alphabet import ALPHABET
 
 def prepare_text(text: str) -> str:
     """
