@@ -1,6 +1,6 @@
+from alphabet import ALPHABET
 from typing import Optional, Tuple, Dict
 
-from alphabet import ALPHABET
 from funcs import prepare_text, save_to_file, read_file
 
 
