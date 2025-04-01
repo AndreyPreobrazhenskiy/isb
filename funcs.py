@@ -1,7 +1,8 @@
 from pathlib import Path
+
 from alphabet import ALPHABET
 
-def prepare_text(text):
+def prepare_text(text: str) -> str:
     """
     Cleans the text based on the alphabet.
 
@@ -10,7 +11,7 @@ def prepare_text(text):
     """
     return ''.join(c.upper() for c in text if c.upper() in ALPHABET)
 
-def read_file(filename):
+def read_file(filename: str) -> str:
     """
     Reads a file and handles errors if the file is not found.
 
@@ -24,7 +25,7 @@ def read_file(filename):
     except FileNotFoundError as error:
         raise FileNotFoundError(f"File {filename} not found") from error
 
-def save_to_file(filename, content):
+def save_to_file(filename: str, content: str) -> None:
     """
     Writes content to a file, creating directories if necessary.
 
