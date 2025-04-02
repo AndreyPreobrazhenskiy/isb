@@ -80,3 +80,29 @@ def frequency_decrypt(cipher_text: str, freq_file: str, reference_freq: Dict[str
     decrypted_text = decode_text(cipher_text, mapping)
 
     return decrypted_text, mapping
+
+
+def run_task2(input_file: str, output_prefix: str, reference_freq_file: str) -> Dict[str, str]:
+    """
+    Runs frequency analysis and decryption.
+
+    :param input_file: Path to the input file containing encrypted text.
+    :param output_prefix: Prefix for output file names.
+    :param reference_freq_file: Path to the reference frequency JSON file.
+    :return: A dictionary containing paths to output files.
+    """
+    reference_freq = load_reference_frequencies(reference_freq_file)
+    cipher_text = read_file(input_file)
+
+    freq_file = f"{output_prefix}_frequencies.json"
+    decrypted_text, mapping = frequency_decrypt(cipher_text, freq_file, reference_freq)
+
+    save_to_file(f"{output_prefix}_decrypted.txt", decrypted_text)
+    with open(f"{output_prefix}_mapping.json", mode='w', encoding='utf-8') as file:
+        json.dump(mapping, file, ensure_ascii=False, indent=2)
+
+    return {
+        "decrypted_file": f"{output_prefix}_decrypted.txt",
+        "mapping_file": f"{output_prefix}_mapping.json",
+        "frequency_file": freq_file
+    }
