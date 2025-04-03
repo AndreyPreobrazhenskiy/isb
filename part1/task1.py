@@ -34,6 +34,7 @@ def atbash_encrypt(text: str, key: Optional[str] = None) -> Tuple[str, str]:
 
     return encrypted_text, key_mapping
 
+
 def run_task1(input_file: str, output_prefix: str, key: Optional[str] = None) -> Dict[str, str]:
     """
     Reads an input file, encrypts the content, and saves the results.

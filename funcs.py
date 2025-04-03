@@ -1,6 +1,6 @@
-from alphabet import ALPHABET
 from pathlib import Path
 
+from alphabet import ALPHABET
 
 def prepare_text(text: str) -> str:
     """
@@ -10,6 +10,7 @@ def prepare_text(text: str) -> str:
     :return: The cleaned text containing only characters from the alphabet.
     """
     return ''.join(c.upper() for c in text if c.upper() in ALPHABET)
+
 
 def read_file(filename: str) -> str:
     """
@@ -24,6 +25,7 @@ def read_file(filename: str) -> str:
             return file.read()
     except FileNotFoundError as error:
         raise FileNotFoundError(f"File {filename} not found") from error
+
 
 def save_to_file(filename: str, content: str) -> None:
     """

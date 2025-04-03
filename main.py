@@ -1,4 +1,5 @@
 import argparse
+from pathlib import Path
 
 from part1.task1 import run_task1
 from part2.task2 import run_task2
@@ -6,7 +7,7 @@ from part2.task2 import run_task2
 
 def parse_args():
     """
-    Parses command-line arguments.
+    Parse command-line arguments for the encryption and decryption tasks.
 
     :return: Parsed command-line arguments.
     """
@@ -17,14 +18,18 @@ def parse_args():
     parser.add_argument('--output_dir', default='output', help='Directory for results')
     return parser.parse_args()
 
+
 if __name__ == "__main__":
     args = parse_args()
 
+    output_task1 = Path(args.output_dir) / "task1"
+    output_task2 = Path(args.output_dir) / "task2"
+
     print("Executing Task 1...")
-    result1 = run_task1(args.input1, f"{args.output_dir}/task1")
+    result1 = run_task1(args.input1, str(output_task1))
 
     print("\nExecuting Task 2...")
-    result2 = run_task2(args.input2, f"{args.output_dir}/task2", args.reference_freq_file)
+    result2 = run_task2(args.input2, str(output_task2), args.reference_freq_file)
 
     print("\nResults:")
     print(f"1. Encrypted file: {result1['encrypted_file']}")
