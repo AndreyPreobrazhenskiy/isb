@@ -25,7 +25,7 @@ def calculate_frequencies(text: str) -> Dict[str, float]:
     """
     freq = Counter(text)
     total_chars = sum(freq.values())
-    return {char: round(count / total_chars, 6) for char, count in freq.items()}
+    return {char: round(count / total_chars, 6) for char, count in freq.items() if char != "\n"}
 
 
 def save_frequencies(freq_dict: Dict[str, float], filename: str) -> None:
@@ -62,7 +62,7 @@ def decode_text(text: str, mapping: Dict[str, str]) -> str:
     :param mapping: The character mapping dictionary.
     :return: The decrypted text.
     """
-    return ''.join(mapping.get(char, char) for char in text)
+    return ''.join(mapping.get(char, char) if char != '\n' else ' ' for char in text)
 
 
 def frequency_decrypt(cipher_text: str, freq_file: str, reference_freq: Dict[str, float]) -> Tuple[str, Dict[str, str]]:
@@ -107,3 +107,20 @@ def run_task2(input_file: str, output_prefix: str, reference_freq_file: str) -> 
         "mapping_file": f"{output_prefix}_mapping.json",
         "frequency_file": freq_file
     }
+
+
+def decode_with_mapping_file(input_file: str, mapping_file: str, output_file: str) -> None:
+    """
+    Decodes the given text file using a character mapping from a JSON file.
+
+    :param input_file: Path to the encrypted input text file.
+    :param mapping_file: Path to the JSON file containing the character mapping.
+    :param output_file: Path to save the decoded text.
+    """
+    cipher_text = read_file(input_file)
+
+    with open(mapping_file, mode='r', encoding='utf-8') as file:
+        mapping = json.load(file)
+
+    decrypted_text = decode_text(cipher_text, mapping)
+    save_to_file(output_file, decrypted_text)
