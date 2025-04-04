@@ -2,7 +2,7 @@ import argparse
 from pathlib import Path
 
 from part1.task1 import run_task1
-from part2.task2 import run_task2
+from part2.task2 import run_task2, decode_with_mapping_file
 
 
 def parse_args():
@@ -16,6 +16,8 @@ def parse_args():
     parser.add_argument('--input2', required=True, help='Input file for Task 2')
     parser.add_argument('--reference_freq_file', required=True, help='Reference frequency file')
     parser.add_argument('--output_dir', default='output', help='Directory for results')
+    parser.add_argument('--mapping_decrypt_input', required=True, help='Text file to decode using existing mapping')
+    parser.add_argument('--mapping_file', required=True, help='JSON file with saved character mapping')
     return parser.parse_args()
 
 
@@ -28,8 +30,12 @@ if __name__ == "__main__":
     print("Executing Task 1...")
     result1 = run_task1(args.input1, str(output_task1))
 
-    print("\nExecuting Task 2...")
+    print("\nExecuting Task 2 (frequency analysis)...")
     result2 = run_task2(args.input2, str(output_task2), args.reference_freq_file)
+
+    print("\nExecuting Task 3 (mapped decryption)...")
+    decoded_output_path = Path(args.output_dir) / "mapping_decrypted.txt"
+    decode_with_mapping_file(args.mapping_decrypt_input, args.mapping_file, str(decoded_output_path))
 
     print("\nResults:")
     print(f"1. Encrypted file: {result1['encrypted_file']}")
@@ -37,3 +43,4 @@ if __name__ == "__main__":
     print(f"2. Decrypted file: {result2['decrypted_file']}")
     print(f"   Mapping table: {result2['mapping_file']}")
     print(f"   Frequency file: {result2['frequency_file']}")
+    print(f"3. Mapped decryption output: {decoded_output_path}")
