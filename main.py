@@ -14,7 +14,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='File processing: encryption and decryption')
     parser.add_argument('--input1', required=True, help='Input file for Task 1')
     parser.add_argument('--input2', required=True, help='Input file for Task 2')
-    parser.add_argument('--reference_freq_file', required=True, help='Reference frequency file')
+    parser.add_argument('--reference_freq_file', required=False, help='Reference frequency file (optional)')
     parser.add_argument('--output_dir', default='output', help='Directory for results')
     parser.add_argument('--mapping_decrypt_input', required=True, help='Text file to decode using existing mapping')
     parser.add_argument('--mapping_file', required=True, help='JSON file with saved character mapping')
@@ -27,11 +27,14 @@ if __name__ == "__main__":
     output_task1 = Path(args.output_dir) / "task1"
     output_task2 = Path(args.output_dir) / "task2"
 
+    output_task1.mkdir(parents=True, exist_ok=True)
+    output_task2.mkdir(parents=True, exist_ok=True)
+
     print("Executing Task 1...")
     result1 = run_task1(args.input1, str(output_task1))
 
-    print("\nExecuting Task 2 (frequency analysis)...")
-    result2 = run_task2(args.input2, str(output_task2), args.reference_freq_file)
+    print("\nExecuting Task 2 (frequency analysis only)...")
+    result2 = run_task2(args.input2, str(output_task2))
 
     print("\nExecuting Task 3 (mapped decryption)...")
     decoded_output_path = Path(args.output_dir) / "mapping_decrypted.txt"
@@ -40,7 +43,5 @@ if __name__ == "__main__":
     print("\nResults:")
     print(f"1. Encrypted file: {result1['encrypted_file']}")
     print(f"   Encryption key: {result1['key_file']}")
-    print(f"2. Decrypted file: {result2['decrypted_file']}")
-    print(f"   Mapping table: {result2['mapping_file']}")
-    print(f"   Frequency file: {result2['frequency_file']}")
+    print(f"2. Frequency file: {result2['frequency_file']}")
     print(f"3. Mapped decryption output: {decoded_output_path}")
