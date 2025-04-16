@@ -46,24 +46,34 @@ def frequency_bit_test(sequence: str) -> float:
 
 def runs_test(sequence: str) -> float:
     """
-    Performs a test for identical consecutive bits.
-    :param sequence: The sequence
-    :return: P-value
+    Perform the Runs Test for randomness on a binary sequence.
+
+    The test evaluates whether the number of runs (i.e., transitions between 0 and 1)
+    in the sequence is consistent with what is expected from a truly random sequence.
+
+    Args:
+        sequence (str): A binary string consisting of characters '0' and '1'.
+
+    Returns:
+        float: The p-value of the test. Values close to 1 indicate randomness,
+                while values close to 0 suggest non-randomness.
     """
     n = len(sequence)
-    p = sequence.count('1') / n
+    if n < 2:
+        return 0.0
 
-    if abs(p - 0.5) >= 2 / math.sqrt(n):
-        return 0.0  # Not random enough for runs test
+    proportion = sequence.count('1') / n
 
-    v_n = 1
-    for i in range(1, n):
-        if sequence[i] != sequence[i - 1]:
-            v_n += 1
+    if abs(proportion - 0.5) >= 2 / math.sqrt(n):
+        return 0.0
 
-    numerator = abs(v_n - 2 * n * p * (1 - p))
-    denominator = 2 * math.sqrt(2 * n) * p * (1 - p)
-    return math.erfc(numerator / denominator)
+    Vn = sum(1 for i in range(1, n) if sequence[i] != sequence[i - 1])
+
+    numerator = abs(Vn - 2 * n * proportion * (1 - proportion))
+    denominator = 2 * math.sqrt(2 * n) * proportion * (1 - proportion)
+    p_value = math.erfc(numerator / denominator)
+
+    return p_value
 
 
 def block_run_test(sequence: str) -> float:
