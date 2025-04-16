@@ -1,6 +1,6 @@
-cpp_sequence_txt = "C:\\Users\\Я\\Desktop\\isblab2\\part1\\c_gen\\cpp_sequence.txt"
-python_sequence_txt = "C:\\Users\\Я\\Desktop\\isblab2\\part1\\python_gen\\python_sequence.txt"
-java_sequence_txt = "C:\\Users\\Я\\Desktop\\isblab2\\part1\\java_gen\\java_sequence.txt"
+cpp_sequence_txt = "/part1/c_gen/cpp_sequence.txt"
+python_sequence_txt = "/part1/python_gen/python_sequence.txt"
+java_sequence_txt = "/part1/java_gen/java_sequence.txt"
 
 test_results_cpp = "test_results_cpp.txt"
 test_results_python = "test_results_python.txt"
