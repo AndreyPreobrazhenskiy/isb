@@ -1,19 +1,19 @@
 from typing import Dict
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.primitives import padding as sym_padding, hashes
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.hazmat.primitives.asymmetric import padding as asym_padding
-from cryptography.hazmat.primitives import padding, hashes
 
 
 def decrypt_file(settings: Dict[str, str]) -> None:
     """
-    Decrypts an encrypted file using an RSA-encrypted AES symmetric key.
+    Decrypts a file encrypted with a symmetric SEED key, where the key was originally encrypted with RSA.
 
     :param settings: A dictionary with the following keys:
-        - 'symmetric_key': Path to the file containing the encrypted symmetric key.
-        - 'secret_key': Path to the PEM-encoded RSA private key file.
-        - 'encrypted_file': Path to the AES-encrypted file.
-        - 'decrypted_file': Path to save the decrypted output file.
+        - 'symmetric_key': Path to the RSA-encrypted symmetric key file.
+        - 'secret_key': Path to the PEM-encoded RSA private key file used for decrypting the symmetric key.
+        - 'encrypted_file': Path to the file that contains the IV and SEED-encrypted data.
+        - 'decrypted_file': Path to save the decrypted plaintext output.
     :return: None
     """
 
@@ -42,13 +42,12 @@ def decrypt_file(settings: Dict[str, str]) -> None:
     iv = data[:16]
     ciphertext = data[16:]
 
-    cipher = Cipher(algorithms.AES(symmetric_key), modes.CBC(iv))
+    cipher = Cipher(algorithms.SEED(symmetric_key), modes.CBC(iv))
     decryptor = cipher.decryptor()
-
-    print("[*] Дешифрование и удаление паддинга...")
     padded_plaintext = decryptor.update(ciphertext) + decryptor.finalize()
 
-    unpadder = padding.ANSIX923(128).unpadder()
+    print("[*] Дешифрование и удаление паддинга...")
+    unpadder = sym_padding.ANSIX923(128).unpadder()
     plaintext = unpadder.update(padded_plaintext) + unpadder.finalize()
 
     with open(settings['decrypted_file'], 'wb') as f:
