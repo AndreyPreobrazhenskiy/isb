@@ -1,20 +1,20 @@
 import os
 from typing import Dict
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.primitives import padding as sym_padding, hashes
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.hazmat.primitives.asymmetric import padding as asym_padding
-from cryptography.hazmat.primitives import padding, hashes
 
 
 def encrypt_file(settings: Dict[str, str]) -> None:
     """
-    Encrypts a file using an RSA-encrypted symmetric key (AES) and stores the result.
+    Encrypts a file using a symmetric SEED key (originally encrypted with RSA), and saves the result.
 
-    :param settings: A dictionary containing the following keys:
-        - 'symmetric_key': Path to the encrypted symmetric key file.
-        - 'secret_key': Path to the RSA private key used for decrypting the symmetric key.
-        - 'initial_file': Path to the file to be encrypted.
-        - 'encrypted_file': Path to save the encrypted file.
+    :param settings: A dictionary with the following keys:
+        - 'symmetric_key': Path to the RSA-encrypted symmetric key file.
+        - 'secret_key': Path to the PEM-encoded RSA private key used to decrypt the symmetric key.
+        - 'initial_file': Path to the plaintext file to encrypt.
+        - 'encrypted_file': Path to write the resulting encrypted file (IV + ciphertext).
     :return: None
     """
 
@@ -40,15 +40,13 @@ def encrypt_file(settings: Dict[str, str]) -> None:
     with open(settings['initial_file'], 'rb') as f:
         plaintext = f.read()
 
-    padder = padding.ANSIX923(128).padder()
-    padded = padder.update(plaintext) + padder.finalize()
+    padder = sym_padding.ANSIX923(128).padder()
+    padded_data = padder.update(plaintext) + padder.finalize()
 
     iv = os.urandom(16)
-    cipher = Cipher(algorithms.AES(symmetric_key), modes.CBC(iv))
+    cipher = Cipher(algorithms.SEED(symmetric_key), modes.CBC(iv))
     encryptor = cipher.encryptor()
-
-    print("[*] Шифрование файла...")
-    ciphertext = encryptor.update(padded) + encryptor.finalize()
+    ciphertext = encryptor.update(padded_data) + encryptor.finalize()
 
     with open(settings['encrypted_file'], 'wb') as f:
         f.write(iv + ciphertext)
