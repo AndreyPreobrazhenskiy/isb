@@ -5,6 +5,7 @@ from asymmetric_encryption import generate_keys
 from symmetric_encryption import encrypt_file
 from symmetric_encryption import decrypt_file
 
+
 def main() -> None:
     args = parse_args()
     settings = load_settings()
