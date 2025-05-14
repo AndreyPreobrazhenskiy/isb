@@ -1,7 +1,8 @@
 import os
 from typing import Dict
 from cryptography.hazmat.primitives.asymmetric import rsa, padding as asym_padding
-from cryptography.hazmat.primitives import serialization, hashes
+from cryptography.hazmat.primitives import hashes
+from file_manager import FileManager
 
 
 class AsymetricEncryption:
@@ -26,18 +27,8 @@ class AsymetricEncryption:
         public_key = private_key.public_key()
 
         print("[*] Сериализация ключей...")
-        with open('public_key.txt', 'wb') as f:
-            f.write(public_key.public_bytes(
-                encoding=serialization.Encoding.PEM,
-                format=serialization.PublicFormat.SubjectPublicKeyInfo
-            ))
-
-        with open('private_key.txt', 'wb') as f:
-            f.write(private_key.private_bytes(
-                encoding=serialization.Encoding.PEM,
-                format=serialization.PrivateFormat.TraditionalOpenSSL,
-                encryption_algorithm=serialization.NoEncryption()
-            ))
+        FileManager.save_public_key(public_key)
+        FileManager.save_private_key(private_key)
 
         print("[*] Шифрование симметричного ключа...")
         encrypted_sym_key = public_key.encrypt(
