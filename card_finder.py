@@ -21,7 +21,7 @@ def gen_card_nums(bin_code: str):
 
 
 def check_hash(card_nums: str) -> str | None:
-    hashed = hashlib.sha224(card_nums.encode()).hexdigest()
+    hashed = hashlib.sha3_256(card_nums.encode()).hexdigest()
 
     if hashed == CARD_HASH:
         return card_nums
